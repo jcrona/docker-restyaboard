@@ -1,15 +1,5 @@
 FROM debian:stretch
 
-ENV RESTYABOARD_VERSION=v0.4.2 \
-    ROOT_DIR=/usr/share/nginx/html \
-    CONF_FILE=/etc/nginx/conf.d/restyaboard.conf \
-    SMTP_DOMAIN=localhost \
-    SMTP_USERNAME=root \
-    SMTP_PASSWORD=root \
-    SMTP_SERVER=localhost \
-    SMTP_PORT=465 \
-    TZ=Etc/UTC
-
 # update & install package
 RUN apt-get update && \
     echo "postfix postfix/mailname string localhost" | debconf-set-selections && \
@@ -36,22 +26,35 @@ RUN apt-get update && \
     postgresql-client \
     unzip
 
+# after initial setup of deps to improve rebuilding speed
+ENV RESTYABOARD_VERSION=v0.6.1 \
+    ROOT_DIR=/usr/share/nginx/html \
+    CONF_FILE=/etc/nginx/conf.d/restyaboard.conf \
+    SMTP_DOMAIN=localhost \
+    SMTP_USERNAME=root \
+    SMTP_PASSWORD=root \
+    SMTP_SERVER=localhost \
+    SMTP_PORT=465 \
+    TZ=Etc/UTC
+
 # deploy app
 RUN curl -L -s -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/releases/download/${RESTYABOARD_VERSION}/board-${RESTYABOARD_VERSION}.zip && \
     unzip /tmp/restyaboard.zip -d ${ROOT_DIR} && \
     rm /tmp/restyaboard.zip
 
-# extensions
+# free restyaboard apps
 RUN curl -L -s -o /tmp/apps.json https://raw.githubusercontent.com/RestyaPlatform/board-apps/master/apps.json && \
     chmod -R go+w /tmp/apps.json && \
     mkdir -p "${ROOT_DIR}/client/apps" && \
 	for fid in $(jq -r '.[] | .id + "-v" + .version' /tmp/apps.json); \
 	do \
-	    curl -L -s -G -o /tmp/$fid.zip https://github.com/RestyaPlatform/board-apps/releases/download/v1/$fid.zip; \
+	    curl -L -s -G -o /tmp/$fid.zip https://github.com/RestyaPlatform/board-apps/releases/download/v2/$fid.zip; \
         file /tmp/$fid.zip | grep Zip && unzip /tmp/$fid.zip -d "${ROOT_DIR}/client/apps"; \
         rm /tmp/$fid.zip; \
 	done && \
     rm /tmp/apps.json
+
+# TODO restyaboard paid apps integration
 
 # setting app
 WORKDIR ${ROOT_DIR}
