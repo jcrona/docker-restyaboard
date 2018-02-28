@@ -126,9 +126,16 @@ Problems
 ------------------------------
 In our company we use Ubuntu 14.04 and have central servers.
 In this environment the compose file is not working properly not sure why.
+After starting the container you have to bash into the restyaboard container:
+Starting from the working dir execute the following:
+```
+chown -cR www-data:www-data .
+chmod -R 0755 .
+touch tmp/cache/client.php
+touch tmp/cache/site_url_for_shell.php
+```
 
-Stuff to do to make it work temporarly will follow.
-
+This is only a __temporary__ solution!
 
 License
 ------------------------------
