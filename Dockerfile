@@ -27,7 +27,7 @@ RUN apt-get update && \
     unzip
 
 # after initial setup of deps to improve rebuilding speed
-ENV RESTYABOARD_VERSION=v0.6.1 \
+ENV RESTYABOARD_VERSION=v0.6.2 \
     ROOT_DIR=/usr/share/nginx/html \
     CONF_FILE=/etc/nginx/conf.d/restyaboard.conf \
     SMTP_DOMAIN=localhost \
@@ -42,21 +42,12 @@ RUN curl -L -s -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/r
     unzip /tmp/restyaboard.zip -d ${ROOT_DIR} && \
     rm /tmp/restyaboard.zip
 
-# free restyaboard apps
-RUN curl -L -s -o /tmp/apps.json https://raw.githubusercontent.com/RestyaPlatform/board-apps/master/apps.json && \
-    chmod -R go+w /tmp/apps.json && \
-    mkdir -p "${ROOT_DIR}/client/apps" && \
-	for fid in $(jq -r '.[] | .id + "-v" + .version' /tmp/apps.json); \
-	do \
-	    curl -L -s -G -o /tmp/$fid.zip https://github.com/RestyaPlatform/board-apps/releases/download/v2/$fid.zip; \
-        file /tmp/$fid.zip | grep Zip && unzip /tmp/$fid.zip -d "${ROOT_DIR}/client/apps"; \
-        rm /tmp/$fid.zip; \
-	done && \
-    rm /tmp/apps.json
+# install apps
+ADD scripts/install_apps.sh /tmp/
+RUN chmod +x /tmp/install_apps.sh
+RUN . /tmp/install_apps.sh
 
-# TODO restyaboard paid apps integration
-
-# setting app
+# configure app
 WORKDIR ${ROOT_DIR}
 RUN rm /etc/nginx/sites-enabled/default && \
     cp restyaboard.conf ${CONF_FILE} && \

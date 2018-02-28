@@ -2,12 +2,13 @@ Docker Restyaboard
 ===================
 
 Trello like kanban board. http://restya.com/board/
+Github Restyaboard: https://github.com/RestyaPlatform/board
 
 TL;DR
 -----
 
 ```bash
-git clone https://github.com/cangeli/docker-restyaboard
+git clone https://github.com/blackdark93/docker-restyaboard
 cd docker-restyaboard
 git checkout alpine
 docker-compose up -d
@@ -24,7 +25,7 @@ docker-compose.yml
 version: '2'
 services:
   restyaboard:
-    image: cangeli/docker-restyaboard:alpine
+    image: blackdark93/docker-restyaboard:latest
     ports:
       - 1234:80
     volumes:
@@ -38,7 +39,7 @@ services:
       - postgres
     restart: always
   postgres:
-    image: kiasaki/alpine-postgres
+    image: postgres
     ports:
       - 5432:5432
     environment:
@@ -69,7 +70,7 @@ Build from github
 Build image and Run containers using docker-compose.
 
 ``` bash
-git clone https://github.com/cangeli/docker-restyaboard.git
+git clone https://github.com/blackdark93/docker-restyaboard.git
 cd docker-restyaboard
 ```
 
@@ -119,6 +120,14 @@ psql -f sql/upgrade-0.4.3-0.4.4.sql
 ...
 exit
 ```
+
+
+Problems
+------------------------------
+In our company we use Ubuntu 14.04 and have central servers.
+In this environment the compose file is not working properly not sure why.
+
+Stuff to do to make it work temporarly will follow.
 
 
 License
