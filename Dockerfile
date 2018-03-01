@@ -54,10 +54,8 @@ RUN rm /etc/nginx/sites-enabled/default && \
     sed -i "s/server_name.*$/server_name \"localhost\";/" ${CONF_FILE} && \
 	sed -i "s|listen 80.*$|listen 80;|" ${CONF_FILE} && \
     sed -i "s|root.*html|root ${ROOT_DIR}|" ${CONF_FILE} && \
-    chown -R www-data:www-data . && \
-    chmod -R 777 media && \
-    chmod -R 777 client/img && \
-    chmod -R 777 tmp
+    chown -cR www-data:www-data . && \
+    chmod -R 777 .
 
 # cleanup
 RUN apt-get autoremove -y --purge && \
