@@ -4,8 +4,8 @@ services:
     build: .
     ports:
       - 1234:80
-    volumes:
-       - /var/opt/restya/media:/usr/share/nginx/html/media
+    # volumes:
+    #    - /var/opt/restya/media:/usr/share/nginx/html/media
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_USER=admin
@@ -30,3 +30,10 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=restyaboard
     restart: always
+  # pgadmin:
+  #   image: fenglc/pgadmin4
+  #   ports:
+  #     - 1235:5050
+  #   environment:
+  #     - DEFAULT_USER=admin
+  #     - DEFAULT_PASSWORD=admin
