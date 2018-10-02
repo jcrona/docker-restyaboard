@@ -17,31 +17,31 @@ if [ "$1" = 'start' ]; then
   sed -i "s|;date.timezone = |date.timezone = ${TZ}|" /etc/php/7.0/fpm/php.ini
 
   # postfix
-  echo "[${SMTP_SERVER}]:${SMTP_PORT} ${SMTP_USERNAME}:${SMTP_PASSWORD}" > /etc/postfix/sasl_passwd
-  postmap /etc/postfix/sasl_passwd
-  echo "www-data@${SMTP_DOMAIN} ${SMTP_USERNAME}" > /etc/postfix/sender_canonical
-  postmap /etc/postfix/sender_canonical
-  sed -i \
-      -e '/mydomain.*/d' \
-      -e '/myhostname.*/d' \
-      -e '/myorigin.*/d' \
-      -e '/mydestination.*/d' \
-      -e "$ a mydomain = ${SMTP_DOMAIN}" \
-      -e "$ a myhostname = localhost" \
-      -e '$ a myorigin = $mydomain' \
-      -e '$ a mydestination = localhost, $myhostname, localhost.$mydomain' \
-      -e '$ a sender_canonical_maps = hash:/etc/postfix/sender_canonical' \
-      -e "s/#relayhost =.*$/relayhost = [${SMTP_SERVER}]:${SMTP_PORT}/" \
-      -e '/smtp_.*/d' \
-      -e '$ a smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache' \
-      -e '$ a smtp_sasl_auth_enable = yes' \
-      -e '$ a smtp_sasl_security_options = noanonymous' \
-      -e '$ a smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd' \
-      -e '$ a smtp_use_tls = yes' \
-      -e '$ a smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt' \
-      -e '$ a smtp_tls_wrappermode = yes' \
-      -e '$ a smtp_tls_security_level = encrypt' \
-      /etc/postfix/main.cf
+#  echo "[${SMTP_SERVER}]:${SMTP_PORT} ${SMTP_USERNAME}:${SMTP_PASSWORD}" > /etc/postfix/sasl_passwd
+#  postmap /etc/postfix/sasl_passwd
+#  echo "www-data@${SMTP_DOMAIN} ${SMTP_USERNAME}" > /etc/postfix/sender_canonical
+#  postmap /etc/postfix/sender_canonical
+#  sed -i \
+#      -e '/mydomain.*/d' \
+#      -e '/myhostname.*/d' \
+#      -e '/myorigin.*/d' \
+#      -e '/mydestination.*/d' \
+#      -e "$ a mydomain = ${SMTP_DOMAIN}" \
+#      -e "$ a myhostname = localhost" \
+#      -e '$ a myorigin = $mydomain' \
+#      -e '$ a mydestination = localhost, $myhostname, localhost.$mydomain' \
+#      -e '$ a sender_canonical_maps = hash:/etc/postfix/sender_canonical' \
+#      -e "s/#relayhost =.*$/relayhost = [${SMTP_SERVER}]:${SMTP_PORT}/" \
+#      -e '/smtp_.*/d' \
+#      -e '$ a smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache' \
+#      -e '$ a smtp_sasl_auth_enable = yes' \
+#      -e '$ a smtp_sasl_security_options = noanonymous' \
+#      -e '$ a smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd' \
+#      -e '$ a smtp_use_tls = yes' \
+#      -e '$ a smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt' \
+#      -e '$ a smtp_tls_wrappermode = yes' \
+#      -e '$ a smtp_tls_security_level = encrypt' \
+#      /etc/postfix/main.cf
 
   # init db
   export PGHOST=${POSTGRES_HOST}
