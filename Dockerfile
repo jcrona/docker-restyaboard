@@ -56,6 +56,7 @@ RUN rm /etc/nginx/sites-enabled/default && \
     sed -i "s/server_name.*$/server_name \"localhost\";/" ${CONF_FILE} && \
 	sed -i "s|listen 80.*$|listen 80;|" ${CONF_FILE} && \
     sed -i "s|root.*html|root ${ROOT_DIR}|" ${CONF_FILE}
+ADD https /etc/nginx/https
 
 # cleanup
 RUN apt-get autoremove -y --purge && \

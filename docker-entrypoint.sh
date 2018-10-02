@@ -69,6 +69,19 @@ if [ "$1" = 'start' ]; then
   echo "*/30 * * * * ${ROOT_DIR}/server/php/shell/imap.sh" >> /var/spool/cron/crontabs/root
   echo "*/5 * * * * ${ROOT_DIR}/server/php/shell/webhook.sh" >> /var/spool/cron/crontabs/root
   echo "*/5 * * * * ${ROOT_DIR}/server/php/shell/card_due_notification.sh" >> /var/spool/cron/crontabs/root
+  # check daily for updated certificates
+  echo "0 * * * * service nginx reload" >> /var/spool/cron/crontabs/root
+
+  if [ "$HTTPS" = "1" ]; then
+    echo "Setting up HTTPS"
+    sed -i '3iinclude https;' $CONF_FILE
+    echo "ssl_certificate $CERT;" >> /etc/nginx/https
+    echo "ssl_certificate_key $KEY;" >> /etc/nginx/https
+    echo "############# https config"
+    cat /etc/nginx/https
+    echo "############# $CONF_FILE"
+    head -10 $CONF_FILE
+  fi
 
   # service start
   service cron start

@@ -4,8 +4,13 @@ services:
     build: .
     ports:
       - 1234:80
-    # volumes:
-    #    - /var/opt/restya/media:/usr/share/nginx/html/media
+      - 1235:443 # https
+    volumes:
+      #- /etc/letsencrypt/live/example.com:/cert # 1) mount existing cert folder into container
+
+      #  - /root/restya/media:/usr/share/nginx/html/media # we probably want to keep uploaded media persisted?
+      # changing to that can kill all existing data, copy data from container into some place
+
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_USER=admin
@@ -16,6 +21,9 @@ services:
 #      - SMTP_PASSWORD=pass
 #      - SMTP_SERVER=server
 #      - SMTP_PORT=465
+      #- HTTPS=1                   # 2) enable https
+      #- CERT=/cert/fullchain.pem  # 3) place & name of certificate
+      #- KEY=/cert/privkey.pem     # 4) place & name of cert key
       - TZ=Etc/UTC
     depends_on:
       - postgres
@@ -30,6 +38,8 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=restyaboard
     restart: always
+    volumes:
+    #  - /root/restya/pg:/var/lib/postgresql/data  # we also probably want to keep the db persisted ?
   # pgadmin:
   #   image: fenglc/pgadmin4
   #   ports:
